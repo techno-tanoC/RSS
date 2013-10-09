@@ -15,6 +15,11 @@ namespace RSSLib
         public string blogName;
         public string url;
         public int interval;
+        public string item;
+        public string title;
+        public string link;
+        public string description;
+        public string blogTitle;
     }
 
     public class InitXML

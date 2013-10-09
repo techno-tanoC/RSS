@@ -18,8 +18,8 @@ namespace RSSTest
             {
                 Console.WriteLine(s);
             }
-            
 
+            Setting();
             Console.ReadKey();
         }
 
@@ -39,8 +39,26 @@ namespace RSSTest
         {
             var sets = new List<Setting>
             {
-                new Setting() { blogName = "はちま起稿", url = "http://blog.esuteru.com/index.rdf", interval = 30 * 60 * 1000, },
-                new Setting() { blogName = "かれっじライフハッキング", url = "http://college2ch.blomaga.jp/index.rdf", interval = 20 * 60 * 1000, }
+                new Setting() {
+                    blogName = "はちま起稿",
+                    url = "http://blog.esuteru.com/index.rdf",
+                    interval = 30 * 60 * 1000,
+                    item = "item",
+                    title = "title",
+                    link = "link",
+                    description = "description",
+                    blogTitle = "はちま起稿",
+                },
+                new Setting() {
+                    blogName = "かれっじライフハッキング",
+                    url = "http://college2ch.blomaga.jp/index.rdf",
+                    interval = 20 * 60 * 1000,
+                    item = "item",
+                    title = "title",
+                    link = "link",
+                    description = "description",
+                    blogTitle = "カレッジライフハッキング",
+                }
             };
 
             RSSLib.InitXML.SaveXML(sets);
