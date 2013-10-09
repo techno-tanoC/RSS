@@ -118,7 +118,7 @@ namespace RSSLib
                             new SQLiteParameter("@Link", info.link),
                             new SQLiteParameter("@Description", info.description),
                             new SQLiteParameter("@ImageUrl", info.imageUrl),
-                            new SQLiteParameter("@BlogName", info.blogName),
+                            new SQLiteParameter("@BlogName", info.blogTitle),
                         });
                     }
                     transaction.Commit();

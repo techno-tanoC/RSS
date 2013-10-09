@@ -22,17 +22,17 @@ namespace RSSLib
             this.link = link;
             this.description = description;
             this.imageUrl = imgurl;
-            this.blogName = blogName;
+            this.blogTitle = blogName;
         }
 
         public string title { get; set; }
         public string link { get; set; }
         public string description { get; set; }
         public string imageUrl { get; set; }
-        public string blogName { get; set; }
+        public string blogTitle { get; set; }
         public string get()
         {
-            return title + ":" + link + ":" + description + ":" + (imageUrl != null ? imageUrl : "") + ":" + blogName;
+            return title + ":" + link + ":" + description + ":" + (imageUrl != null ? imageUrl : "") + ":" + blogTitle;
         }
     }
 
@@ -142,7 +142,7 @@ namespace RSSLib
                         link = x.Descendants(ns + opts["link"]).First().Value,
                         description = x.Descendants(ns + opts["description"]).First().Value,
                         imageUrl = re.Match(x.ToString()).Groups["img"].Value,
-                        blogName = xml.Descendants(ns + opts["blogTitle"]).First().Value,
+                        blogTitle = xml.Descendants(ns + opts["blogTitle"]).First().Value,
                     }
                     ).ToList();
             }

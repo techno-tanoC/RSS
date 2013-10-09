@@ -13,11 +13,46 @@ namespace RSSTest
         static void Main(string[] args)
         {
 //            RSSDatabase.Create("Demo");
-//            RSSDatabase.Insert(GetList());
-            foreach (var s in RSSLib.RSSDatabase.Test("Demo"))
+//            RSSDatabase.Insert("Demo", GetList());
+//            foreach (var s in RSSLib.RSSDatabase.Test("Demo"))
             {
-                Console.WriteLine(s);
+//                Console.WriteLine(s);
             }
+
+            var sets = new List<Setting>
+            {
+                new Setting() {
+                    blogName = "はちま起稿",
+                    url = "http://blog.esuteru.com/index.rdf",
+                    interval = 150,
+                    item = "item",
+                    title = "title",
+                    link = "link",
+                    description = "description",
+                    blogTitle = "title",
+                },
+                new Setting() {
+                    blogName = "かれっじライフハッキング",
+                    url = "http://college2ch.blomaga.jp/index.rdf",
+                    interval = 30,
+                    item = "item",
+                    title = "title",
+                    link = "link",
+                    description = "description",
+                    blogTitle = "title",
+                },
+                new Setting() {
+                    blogName = "VIPPER速報",
+                    url = "http://vippers.jp/index.rdf",
+                    interval = 15,
+                    item = "item",
+                    title = "title",
+                    link = "link",
+                    description = "description",
+                    blogTitle = "title",
+                }
+            };
+            Console.WriteLine(RSSMngr.ResetTimer(sets).Interval);
 
             Setting();
             Console.ReadKey();
@@ -30,7 +65,7 @@ namespace RSSTest
             var list = RSSProc.GetRSSInfo(page, new string[] {"item", "title", "link", "description", "title"});
             foreach (var i in list)
             {
-//                Console.WriteLine(i.description);
+                Console.WriteLine(i.description);
             }
             return list;
         }
@@ -42,27 +77,37 @@ namespace RSSTest
                 new Setting() {
                     blogName = "はちま起稿",
                     url = "http://blog.esuteru.com/index.rdf",
-                    interval = 30 * 60 * 1000,
+                    interval = 150,
                     item = "item",
                     title = "title",
                     link = "link",
                     description = "description",
-                    blogTitle = "はちま起稿",
+                    blogTitle = "title",
                 },
                 new Setting() {
                     blogName = "かれっじライフハッキング",
                     url = "http://college2ch.blomaga.jp/index.rdf",
-                    interval = 20 * 60 * 1000,
+                    interval = 30,
                     item = "item",
                     title = "title",
                     link = "link",
                     description = "description",
-                    blogTitle = "カレッジライフハッキング",
+                    blogTitle = "title",
+                },
+                new Setting() {
+                    blogName = "VIPPER速報",
+                    url = "http://vippers.jp/index.rdf",
+                    interval = 15,
+                    item = "item",
+                    title = "title",
+                    link = "link",
+                    description = "description",
+                    blogTitle = "title",
                 }
             };
 
-            RSSLib.InitXML.SaveXML(sets);
-            var setting = RSSLib.InitXML.LoadXML();
+            InitXML.SaveXML(sets);
+            var setting = InitXML.LoadXML();
             foreach (var s in setting)
             {
                 Console.WriteLine(s.blogName);

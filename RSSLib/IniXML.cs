@@ -67,7 +67,9 @@ namespace RSSLib
                 }
             }
             catch //setting.xmlがなかった時
-            { }
+            {
+                throw new RSSException("設定ファイルのオープンに失敗しました");
+            }
 
             return setting;
         }
