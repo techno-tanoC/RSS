@@ -12,22 +12,26 @@ namespace RSSLib
     {
         private const int MINITES = 60000;
 
-        static List<Setting> setting;
-        static Timer timer;
-        static RSSMngr()
-        {
-            timer = new Timer();
-        }
+        public List<Setting> setting;
+        public List<RSSInfo> infos;
+        public Timer timer;
+        public Action<object, TimerEventArgs> BeforeGetInfomation;
 
         public RSSMngr()
         {
 
         }
 
-        public static Timer ResetTimer(List<Setting> setting)
+        public Timer ResetTimer(List<Setting> setting)
         {
+            timer.Stop();
+
             timer.Interval = setting.Select(x => x.interval)
                 .Aggregate(0, (ans, each) => ans = GetCommonDivisor(ans, each));
+            timer.Elapsed += TimerEvent;
+
+            timer.Start();
+
             return timer;
         }
         private static int GetCommonDivisor(int x, int y)
@@ -37,5 +41,25 @@ namespace RSSLib
                 return GetCommonDivisor(y, x % y);
         }
 
+        private void TimerEvent(object sender, ElapsedEventArgs e)
+        {
+            if (timerHandler != null)
+            {
+                var args = new TimerEventArgs(setting, infos);
+                timerHandler(sender, args);
+            }
+
+        }
+    }
+
+    public class TimerEventArgs : EventArgs
+    {
+        public List<Setting> setting;
+        public List<RSSInfo> infos;
+        public TimerEventArgs(List<Setting> setting, List<RSSInfo> infos)
+        {
+            this.setting = setting;
+            this.infos = infos;
+        }
     }
 }
