@@ -52,8 +52,7 @@ namespace RSSTest
                     blogTitle = "title",
                 }
             };
-            Console.WriteLine(RSSMngr.ResetTimer(sets).Interval);
-
+            Console.WriteLine(new RSSMngr().ResetTimer(sets).Interval);
             Setting();
             Console.ReadKey();
         }
