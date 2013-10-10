@@ -19,41 +19,9 @@ namespace RSSTest
 //                Console.WriteLine(s);
             }
 
-            var sets = new List<Setting>
-            {
-                new Setting() {
-                    blogName = "はちま起稿",
-                    url = "http://blog.esuteru.com/index.rdf",
-                    interval = 150,
-                    item = "item",
-                    title = "title",
-                    link = "link",
-                    description = "description",
-                    blogTitle = "title",
-                },
-                new Setting() {
-                    blogName = "かれっじライフハッキング",
-                    url = "http://college2ch.blomaga.jp/index.rdf",
-                    interval = 30,
-                    item = "item",
-                    title = "title",
-                    link = "link",
-                    description = "description",
-                    blogTitle = "title",
-                },
-                new Setting() {
-                    blogName = "VIPPER速報",
-                    url = "http://vippers.jp/index.rdf",
-                    interval = 15,
-                    item = "item",
-                    title = "title",
-                    link = "link",
-                    description = "description",
-                    blogTitle = "title",
-                }
-            };
-            Console.WriteLine(new RSSMngr().ResetTimer(sets).Interval);
-            Setting();
+            Console.WriteLine(RSSDatabase.GetMaxCount("Demo"));
+            foreach (var i in RSSDatabase.Test())
+                Console.WriteLine(i);
             Console.ReadKey();
         }
 
@@ -69,7 +37,7 @@ namespace RSSTest
             return list;
         }
 
-        static void Setting()
+        static List<Setting> Setting()
         {
             var sets = new List<Setting>
             {
@@ -111,6 +79,7 @@ namespace RSSTest
             {
                 Console.WriteLine(s.blogName);
             }
+            return setting;
         }
     }
 }

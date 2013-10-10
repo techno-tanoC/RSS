@@ -29,7 +29,8 @@ namespace RSSLib
         {
             timer.Stop();
 
-            timer.Interval = setting.Select(x => x.interval)
+            this.setting = InitXML.LoadXML();
+            timer.Interval = this.setting.Select(x => x.interval)
                 .Aggregate(0, (ans, each) => ans = GetCommonDivisor(ans, each));
             timer.Elapsed += TimerEvent;
 

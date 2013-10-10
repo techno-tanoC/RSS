@@ -15,8 +15,10 @@ namespace RSSLib
         const string seq = "sqlite_sequence";
         const string master = "sqlite_master";
 
-        public static List<string> Test(string tableName)
+        public static List<string> Test()
         {
+            string demo = "Demo";
+
             using (var conn = new SQLiteConnection("Data Source=" + file)) //データベースに接続
             using (var comm = new SQLiteCommand()) //コマンドクラス
             {
@@ -31,12 +33,12 @@ namespace RSSLib
                 comm.ExecuteNonQuery();
                 */
 
-                comm.CommandText = "select * from " + tableName;
+                comm.CommandText = "select * from " + demo;
                 using (var reader = comm.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        ret.Add(reader[1].ToString());
+                        ret.Add(reader[0].ToString());
                     }
                 }
                 
@@ -139,19 +141,56 @@ namespace RSSLib
         }
         public static int ExecuteNonQuery(SQLiteCommand comm, string sql, SQLiteParameter[] param)
         {
-            int ret = 0;
             try
             {
                 comm.CommandText = sql;
                 if (param != null)
                     comm.Parameters.AddRange(param);
-                ret = comm.ExecuteNonQuery();
+                return comm.ExecuteNonQuery();
             }
             catch (Exception e)
             {
                 throw e;
             }
-            return ret;
+        }
+
+        public static int GetMaxCount(string tableName)
+        {
+            string sql = "select max(id) from " + tableName;
+            try
+            {
+                using (var conn = new SQLiteConnection("Data Source=" + file))
+                using (var comm = conn.CreateCommand())
+                {
+                    conn.Open();
+                    using (var transaction = conn.BeginTransaction())
+                    {
+                        using (var reader = ExecuteQuery(comm, sql))
+                        {
+                            if (reader.Read())
+                                return int.Parse(reader[0].ToString());
+                            else
+                                throw new RSSException("idの取得に失敗しました");
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        public static SQLiteDataReader ExecuteQuery(SQLiteCommand comm, string sql)
+        {
+            try
+            {
+                comm.CommandText = sql;
+                return comm.ExecuteReader();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 }
