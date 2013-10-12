@@ -19,8 +19,8 @@ namespace RSSTest
 //                Console.WriteLine(s);
             }
 
-            Console.WriteLine(RSSDatabase.GetMaxCount("Demo"));
-            foreach (var i in RSSDatabase.Test())
+            Console.WriteLine(RSSDatabase.GetLastLink("Demo"));
+            foreach (var i in RSSDatabase.Test("Demo"))
                 Console.WriteLine(i);
             Console.ReadKey();
         }

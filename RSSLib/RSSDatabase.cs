@@ -15,10 +15,8 @@ namespace RSSLib
         const string seq = "sqlite_sequence";
         const string master = "sqlite_master";
 
-        public static List<string> Test()
+        public static List<string> Test(string demo)
         {
-            string demo = "Demo";
-
             using (var conn = new SQLiteConnection("Data Source=" + file)) //データベースに接続
             using (var comm = new SQLiteCommand()) //コマンドクラス
             {
@@ -38,7 +36,7 @@ namespace RSSLib
                 {
                     while (reader.Read())
                     {
-                        ret.Add(reader[0].ToString());
+                        ret.Add(reader[2].ToString());
                     }
                 }
                 
@@ -154,9 +152,9 @@ namespace RSSLib
             }
         }
 
-        public static int GetMaxCount(string tableName)
+        public static string GetLastLink(string tableName)
         {
-            string sql = "select max(id) from " + tableName;
+            string sql = "select max(id), Link from " + tableName;
             try
             {
                 using (var conn = new SQLiteConnection("Data Source=" + file))
@@ -168,9 +166,9 @@ namespace RSSLib
                         using (var reader = ExecuteQuery(comm, sql))
                         {
                             if (reader.Read())
-                                return int.Parse(reader[0].ToString());
+                                return reader[1].ToString();
                             else
-                                throw new RSSException("idの取得に失敗しました");
+                                throw new RSSException("データベースの取得に失敗しました");
                         }
                     }
                 }
@@ -180,6 +178,7 @@ namespace RSSLib
                 throw e;
             }
         }
+
         public static SQLiteDataReader ExecuteQuery(SQLiteCommand comm, string sql)
         {
             try

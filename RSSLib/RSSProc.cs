@@ -109,6 +109,30 @@ namespace RSSLib
             }
         }
 
+        public static List<RSSInfo> GetRSSInfo(string url, Setting setting)
+        {
+            if (setting.item != "" && setting.title != "" && setting.link != "" && setting.description != "" && setting.blogTitle != "")
+            {
+                throw new RSSException("正しくない設定があります");
+            }
+
+            try
+            {
+                return GetRSSInfo(url, new Dictionary<string, string>()
+                {
+                    { "item", setting.item },
+                    { "title", setting.title },
+                    { "link", setting.link },
+                    { "description", setting.description },
+                    { "blogTitle", setting.blogTitle },
+                });
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         /// <summary>
         /// URLとオプションでXMLパース
         /// </summary>
@@ -157,6 +181,21 @@ namespace RSSLib
         public static XDocument GetXML(string url)
         {
             return XDocument.Load(url);
+        }
+
+        public static List<RSSInfo> GetDiffInfo(Setting set, string recent)
+        {
+            try
+            {
+                var update = GetRSSInfo(set.url, set)
+                    .TakeWhile(x => x.link != recent).ToList();
+
+                return update;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 
