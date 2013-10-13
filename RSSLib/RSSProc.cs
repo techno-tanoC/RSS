@@ -16,23 +16,25 @@ namespace RSSLib
     public class RSSInfo
     {
         public RSSInfo() { }
-        public RSSInfo(string title, string link, string description, string imgurl, string blogName)
+        public RSSInfo(string title, string link, string description, string imgurl, string blogUrl, string tableName)
         {
             this.title = title;
             this.link = link;
             this.description = description;
             this.imageUrl = imgurl;
-            this.blogTitle = blogName;
+            this.blogUrl = blogUrl;
+            this.tableName = tableName;
         }
 
         public string title { get; set; }
         public string link { get; set; }
         public string description { get; set; }
         public string imageUrl { get; set; }
-        public string blogTitle { get; set; }
+        public string blogUrl { get; set; }
+        public string tableName { get; set; }
         public string get()
         {
-            return title + ":" + link + ":" + description + ":" + (imageUrl != null ? imageUrl : "") + ":" + blogTitle;
+            return title + ":" + link + ":" + (imageUrl != null ? imageUrl : "") + ":" + blogUrl;
         }
     }
 
@@ -55,7 +57,7 @@ namespace RSSLib
         /// </summary>
         /// <param name="url">URL</param>
         /// <returns>List<RSSInfo></returns>
-        public static List<RSSInfo> GetRSSInfo(string url)
+        public static List<RSSInfo> GetRSSInfo(string url, string tableName)
         {
             return GetRSSInfo(url, new Dictionary<string, string>()
             {
@@ -63,11 +65,11 @@ namespace RSSLib
                 { "title", "title" },
                 { "link", "link" },
                 { "description", "description" },
-                { "blogTitle", "title" },
-            });
+                { "blogUrl", "link" },
+            }, tableName);
         }
 
-        public static List<RSSInfo> GetRSSInfo(string url, string[] opts)
+        public static List<RSSInfo> GetRSSInfo(string url, string[] opts, string tableName)
         {
             if (opts.Length != 5)
                 throw new RSSException("オプションの数が正しくありません");
@@ -79,8 +81,8 @@ namespace RSSLib
                     { "title", opts[1] },
                     { "link", opts[2] },
                     { "description", opts[3] },
-                    { "blogTitle", opts[4] },
-                });
+                    { "blogUrl", opts[4] },
+                }, tableName);
             }
             catch (Exception e)
             {
@@ -88,7 +90,7 @@ namespace RSSLib
             }
         }
 
-        public static List<RSSInfo> GetRSSInfo(string url, List<string> opts)
+        public static List<RSSInfo> GetRSSInfo(string url, List<string> opts, string tableName)
         {
             if (opts.Count != 5)
                 throw new RSSException("オプションの数が正しくありません");
@@ -100,8 +102,8 @@ namespace RSSLib
                     { "title", opts[1] },
                     { "link", opts[2] },
                     { "description", opts[3] },
-                    { "blogTitle", opts[4] },
-                });
+                    { "blogUrl", opts[4] },
+                }, tableName);
             }
             catch (Exception e)
             {
@@ -109,9 +111,9 @@ namespace RSSLib
             }
         }
 
-        public static List<RSSInfo> GetRSSInfo(string url, Setting setting)
+        public static List<RSSInfo> GetRSSInfo(string url, Setting setting, string tableName)
         {
-            if (setting.item != "" && setting.title != "" && setting.link != "" && setting.description != "" && setting.blogTitle != "")
+            if (setting.sets[0] != "" && setting.sets[1] != "" && setting.sets[2] != "" && setting.sets[3] != "" && setting.sets[4] != "")
             {
                 throw new RSSException("正しくない設定があります");
             }
@@ -120,12 +122,12 @@ namespace RSSLib
             {
                 return GetRSSInfo(url, new Dictionary<string, string>()
                 {
-                    { "item", setting.item },
-                    { "title", setting.title },
-                    { "link", setting.link },
-                    { "description", setting.description },
-                    { "blogTitle", setting.blogTitle },
-                });
+                    { "item", setting.sets[0] },
+                    { "title", setting.sets[1] },
+                    { "link", setting.sets[2] },
+                    { "description", setting.sets[3] },
+                    { "blogUrl", setting.sets[4] },
+                }, tableName);
             }
             catch (Exception e)
             {
@@ -139,7 +141,7 @@ namespace RSSLib
         /// <param name="url">XMLのURL</param>
         /// <param name="opts">item title link description blogTitle</param>
         /// <returns>List<RSSInfo></returns>
-        public static List<RSSInfo> GetRSSInfo(string url, Dictionary<string, string> opts)
+        public static List<RSSInfo> GetRSSInfo(string url, Dictionary<string, string> opts, string tableName)
         {
             if (opts.Count != 5)
                 throw new RSSException("オプションの数が正しくありません");
@@ -166,7 +168,8 @@ namespace RSSLib
                         link = x.Descendants(ns + opts["link"]).First().Value,
                         description = x.Descendants(ns + opts["description"]).First().Value,
                         imageUrl = re.Match(x.ToString()).Groups["img"].Value,
-                        blogTitle = xml.Descendants(ns + opts["blogTitle"]).First().Value,
+                        blogUrl = xml.Descendants(ns + opts["blogUrl"]).First().Value,
+                        tableName = tableName,
                     }
                     ).ToList();
             }
@@ -183,14 +186,12 @@ namespace RSSLib
             return XDocument.Load(url);
         }
 
-        public static List<RSSInfo> GetDiffInfo(Setting set, string recent)
+        public static List<RSSInfo> GetDiffInfo(Setting set, string recent, string tableName)
         {
             try
             {
-                var update = GetRSSInfo(set.url, set)
+                return GetRSSInfo(set.url, set, tableName)
                     .TakeWhile(x => x.link != recent).ToList();
-
-                return update;
             }
             catch (Exception e)
             {

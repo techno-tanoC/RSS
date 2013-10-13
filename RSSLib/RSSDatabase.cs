@@ -36,7 +36,7 @@ namespace RSSLib
                 {
                     while (reader.Read())
                     {
-                        ret.Add(reader[2].ToString());
+                        ret.Add(reader[1].ToString());
                     }
                 }
                 
@@ -93,7 +93,7 @@ namespace RSSLib
                 conn.Open();
                 using (var transaction = conn.BeginTransaction())
                 {
-                    ExecuteNonQuery(comm, "create table " + tableName + "(id integer not null primary key autoincrement, Title text, Link text, Description text, ImageUrl text, BlogName text)");
+                    ExecuteNonQuery(comm, "create table " + tableName + "(id integer not null primary key autoincrement, Title text, Link text, Description text, ImageUrl text, BlogUrl text)");
                     transaction.Commit();
                 }
             }
@@ -102,7 +102,7 @@ namespace RSSLib
         public static int Insert(string tableName, List<RSSInfo> infos)
         {
             int ret = 0;
-            string sql = "insert into " + tableName + "(Title,Link,Description,ImageUrl,BlogName) values (@Title,@Link,@Description,@ImageUrl,@BlogName)";
+            string sql = "insert into " + tableName + "(Title,Link,Description,ImageUrl,BlogUrl) values (@Title,@Link,@Description,@ImageUrl,@BlogUrl)";
             using (var conn = new SQLiteConnection("Data Source=" + file))
             using (var comm = new SQLiteCommand(conn))
             {
@@ -118,7 +118,7 @@ namespace RSSLib
                             new SQLiteParameter("@Link", info.link),
                             new SQLiteParameter("@Description", info.description),
                             new SQLiteParameter("@ImageUrl", info.imageUrl),
-                            new SQLiteParameter("@BlogName", info.blogTitle),
+                            new SQLiteParameter("@BlogUrl", info.blogUrl),
                         });
                     }
                     transaction.Commit();
@@ -152,9 +152,9 @@ namespace RSSLib
             }
         }
 
-        public static string GetLastLink(string tableName)
+        public static RSSInfo GetLastInfo(string tableName)
         {
-            string sql = "select max(id), Link from " + tableName;
+            string sql = "select max(id), Title, Link, Description, ImageUrl, BlogUrl from " + tableName;
             try
             {
                 using (var conn = new SQLiteConnection("Data Source=" + file))
@@ -166,16 +166,23 @@ namespace RSSLib
                         using (var reader = ExecuteQuery(comm, sql))
                         {
                             if (reader.Read())
-                                return reader[1].ToString();
+                                return new RSSInfo()
+                                    {
+                                        title = reader[1].ToString(),
+                                        link = reader[2].ToString(),
+                                        description = reader[3].ToString(),
+                                        imageUrl = reader[4].ToString(),
+                                        blogUrl = reader[5].ToString(),
+                                    };
                             else
-                                throw new RSSException("データベースの取得に失敗しました");
+                                return null;
                         }
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
-                throw e;
+                return null;
             }
         }
 

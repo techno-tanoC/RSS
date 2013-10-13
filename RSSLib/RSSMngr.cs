@@ -10,12 +10,26 @@ namespace RSSLib
 {
     public class RSSMngr
     {
+        private class Unit
+        {
+            public Setting set;
+            public RSSInfo lastInfo; //nullの可能性あり
+        }
+
         private const int MINITES = 60000;
+
+        private List<Unit> units;
 
         public Action<object, TimerEventArgs> AfterGetInfomation;
 
         public RSSMngr()
         {
+            units = InitXML.LoadXML().Select(x =>
+                new Unit()
+                {
+                    set = x,
+                    lastInfo = RSSDatabase.GetLastInfo(x.tableName),
+                }).ToList();
         }
 
         private static int GetCommonDivisor(int x, int y)

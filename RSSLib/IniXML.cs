@@ -13,13 +13,10 @@ namespace RSSLib
     public class Setting
     {
         public string blogName;
+        public string tableName;
         public string url;
         public int interval;
-        public string item;
-        public string title;
-        public string link;
-        public string description;
-        public string blogTitle;
+        public string[] sets;
     }
 
     public class InitXML
