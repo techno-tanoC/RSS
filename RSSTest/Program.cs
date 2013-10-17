@@ -12,14 +12,20 @@ namespace RSSTest
     {
         static void Main(string[] args)
         {
-            RSSDatabase.Create("Demo");
-            RSSDatabase.Insert("Demo", GetList());
-            foreach (var s in RSSDatabase.Test("Demo"))
-                Console.WriteLine(s);
+//            RSSDatabase.Create("Demo");
+//            RSSDatabase.Insert("Demo", GetList());
+//            foreach (var s in RSSDatabase.Test("Demo"))
+//                Console.WriteLine(s);
 //            GetList();
-            Console.WriteLine(RSSDatabase.GetLastInfo("Demo").get());
-            
-            Console.ReadKey();
+//            Console.WriteLine(RSSDatabase.GetLastInfo("Demo").get());
+            var mngr = new RSSMngr();
+            mngr.AfterGetInfomation += handler;
+            Console.ReadLine();
+        }
+
+        private static void handler(object sender, TimerEventArgs e)
+        {
+            e.infos.ForEach(x => Console.WriteLine(x.title));
         }
 
         static List<RSSInfo> GetList()
@@ -42,7 +48,7 @@ namespace RSSTest
                     blogName = "はちま起稿",
                     url = "http://blog.esuteru.com/index.rdf",
                     tableName = "hatima",
-                    interval = 150,
+                    interval = 5,
                     sets = new string[]
                     {
                         "item",
@@ -56,7 +62,7 @@ namespace RSSTest
                     blogName = "かれっじライフハッキング",
                     url = "http://college2ch.blomaga.jp/index.rdf",
                     tableName = "college",
-                    interval = 30,
+                    interval = 5,
                     sets = new string[]
                     {
                         "item",
@@ -70,7 +76,7 @@ namespace RSSTest
                     blogName = "VIPPER速報",
                     url = "http://vippers.jp/index.rdf",
                     tableName = "vipper",
-                    interval = 15,
+                    interval = 5,
                     sets = new string[]
                     {
                         "item",
@@ -81,7 +87,7 @@ namespace RSSTest
                     },
                 }
             };
-
+            
             InitXML.SaveXML(sets);
             var setting = InitXML.LoadXML();
             foreach (var s in setting)

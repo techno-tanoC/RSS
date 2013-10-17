@@ -113,7 +113,7 @@ namespace RSSLib
 
         public static List<RSSInfo> GetRSSInfo(string url, Setting setting, string tableName)
         {
-            if (setting.sets[0] != "" && setting.sets[1] != "" && setting.sets[2] != "" && setting.sets[3] != "" && setting.sets[4] != "")
+            if (setting.sets[0] == "" || setting.sets[1] == "" || setting.sets[2] == "" || setting.sets[3] == "" || setting.sets[4] == "")
             {
                 throw new RSSException("正しくない設定があります");
             }
@@ -186,11 +186,11 @@ namespace RSSLib
             return XDocument.Load(url);
         }
 
-        public static List<RSSInfo> GetDiffInfo(Setting set, string recent, string tableName)
+        public static List<RSSInfo> GetDiffInfo(Setting set, string recent)
         {
             try
             {
-                return GetRSSInfo(set.url, set, tableName)
+                return GetRSSInfo(set.url, set, set.tableName)
                     .TakeWhile(x => x.link != recent).ToList();
             }
             catch (Exception e)
